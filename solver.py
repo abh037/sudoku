@@ -3,9 +3,12 @@ from imgutils import *
 import cv2
 import numpy as np
 import sudoku
-from sudoku import Sudoku
+from sudoku import SudokuPuzzle, depth_first_solve
 import sys
 
+net = Net()
+net.load_state_dict(torch.load('cnet.p'))
+net.eval()
 solved = False
 unsolved = []
 solvedboard = []
@@ -25,13 +28,15 @@ while True:
     ret, frame = cap.read()
     
     if not solved:
-        unsolved = getBoardArray(frame)
+        unsolved = getBoardArray(frame, net)
         if isValidBoard(unsolved):
-            puzzle = Sudoku(3, 3, board=unsolved)
-            solution = puzzle.solve()
-            solvedboard = solution.board
-            if not None in [item for sublist in solvedboard for item in sublist]:
+            [list(map(str,i)) for i in unsolved]
+            puzzle = SudokuPuzzle(9, [list(map(str,i)) for i in unsolved], {"1", "2", "3", "4", "5", "6", "7", "8", "9"})
+            solution = depth_first_solve(puzzle)
+            if solution is not None:
+                solvedboard = [list(map(int,i)) for i in solution.get_symbols()]
                 solvedstr = getAnsString(solvedboard, unsolved)
+                print(solvedstr)
                 solved = True
                 counter = 0
             else:
