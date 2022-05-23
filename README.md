@@ -19,8 +19,9 @@ In command line:
 A video window will open up, and any found sudoku grids will have their solutions overlayed on top of them in the video feed.
 
 # Dependencies
-[py-sudoku](https://pypi.org/project/py-sudoku/)
-
 [OpenCV](https://opencv.org/)
 
 [PyTorch](https://pytorch.org/)
+
+# References
+This program uses hhc97's [fast sudoku solver](https://github.com/hhc97/sudoku_solver).
