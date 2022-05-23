@@ -4,7 +4,6 @@ from math import atan2
 from network import Net, train
 import torch
 import torchvision.transforms as transforms
-from PIL import Image
 
 def is_invertible(a):
     """
@@ -161,7 +160,7 @@ def warp(corners, img):
         return None
     return  cv2.warpPerspective(img, M, (blen, blen))
     
-def getNumber(image):
+def getNumber(image, net):
     imsize = 256
     loader = transforms.Compose([transforms.ToTensor(), transforms.Grayscale(num_output_channels=1)])
     def image_loader(image):
@@ -170,10 +169,6 @@ def getNumber(image):
         image = image.unsqueeze(0)  #this is for VGG, may not be needed for ResNet
         return image
         
-    
-    net = Net()
-    net.load_state_dict(torch.load('cnet.p'))
-    net.eval()
     guess = net(image_loader(image)).detach().numpy()[0]
     number = np.argmax(guess)
     return number
@@ -203,7 +198,7 @@ def getAnsString(sols, board):
         string += "\n"
     return string
     
-def getBoardArray(path):
+def getBoardArray(path, net):
     board = getBoard(path)
     array = []
     if board is None:
@@ -225,7 +220,7 @@ def getBoardArray(path):
             tile = cv2.resize(tile, (28, 28), interpolation=cv2.INTER_AREA)
             tile = np.stack((tile,)*3, axis=-1)
             #cv2.imwrite(str(10*i+j)+'.jpg', tile)
-            temp.append(getNumber(tile))
+            temp.append(getNumber(tile, net))
         array.append(temp)
     return array
 
