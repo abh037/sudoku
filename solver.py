@@ -36,7 +36,6 @@ while True:
             if solution is not None:
                 solvedboard = [list(map(int,i)) for i in solution.get_symbols()]
                 solvedstr = getAnsString(solvedboard, unsolved)
-                print(solvedstr)
                 solved = True
                 counter = 0
             else:
